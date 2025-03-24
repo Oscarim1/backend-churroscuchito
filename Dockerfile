@@ -1,6 +1,6 @@
 FROM node:22.14.0
 
-# Instala dependencias del sistema necesarias para Puppeteer
+# Instala las librerías requeridas por Puppeteer
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -18,24 +18,26 @@ RUN apt-get update && apt-get install -y \
     libxcomposite1 \
     libxdamage1 \
     libxrandr2 \
+    libgbm1 \
+    libxshmfence1 \
+    libglu1-mesa \
     xdg-utils \
     --no-install-recommends && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Crea el directorio de trabajo
+# Directorio de trabajo
 WORKDIR /app
 
-# Copia solo package.json y lock para aprovechar cache
+# Copiamos dependencias primero para usar cache
 COPY package*.json ./
-
-# Instala dependencias del proyecto
 RUN npm install
 
-# Copia el resto del código
+# Copiamos el resto del código
 COPY . .
 
-# Expone el puerto del backend
+# Expone puerto
 EXPOSE 3000
 
 # Comando de inicio
 CMD ["npm", "run", "dev"]
+
